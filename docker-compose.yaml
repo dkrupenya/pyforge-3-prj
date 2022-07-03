@@ -1,0 +1,34 @@
+version: "2.3"
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: pyforge.postgres
+    ports:
+      - "5455:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=compounds_db
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - pyforge_net
+
+  api:
+    build:
+      context: .
+      dockerfile: pyforge.Dockerfile
+    container_name: pyforge.api
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./services/web/:/usr/src/app/
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres
+    networks:
+      - pyforge_net
+
+networks:
+  pyforge_net:
+    driver: bridge
