@@ -28,7 +28,6 @@ class Compound(db.Model):
         self.cross_links_count = cross_links_count
         self.date_created = datetime.now()
         self.date_updated = datetime.now()
-        print(f"Item {self.text} added with {self.amount} amount")
 
     def __repr__(self):
         return f"{self.compound}, {self.name}, {self.smiles}"

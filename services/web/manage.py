@@ -1,7 +1,10 @@
 from flask.cli import FlaskGroup
+import logging
 
 from compounds import app, db
 
+
+logging.basicConfig(filename='logs/flask.log', filemode='a', level=logging.DEBUG)
 
 cli = FlaskGroup(app)
 

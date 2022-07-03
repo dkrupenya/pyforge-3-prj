@@ -1,5 +1,9 @@
 import click
 import requests
+import logging
+
+
+logging.basicConfig(filename='logs/cli.log', filemode='a', level=logging.DEBUG)
 
 
 @click.group()
@@ -13,6 +17,7 @@ def add_compound(compound):
     click.echo(f'Compound: {compound}')
     r = requests.get(f'http://localhost:5000/compounds/{compound}')
     c = r.json()
+    logging.info(f'found compound: {c}')
     if c is not None:
         print_compounds([c])
         return
@@ -20,6 +25,7 @@ def add_compound(compound):
     from_api = requests.get(f'https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/{compound}')
     c = from_api.json()
     new_compound = c and c[compound] and c[compound][0]
+    logging.info(f'new compound: {new_compound}')
     if new_compound is None:
         click.echo('Not Found')
         return
@@ -33,8 +39,9 @@ def add_compound(compound):
         smiles=new_compound['smiles'],
         cross_links_count=len(new_compound['cross_links']),
     )
+    logging.info(f'add compound: {formatted}')
     resp = requests.post('http://localhost:5000/compounds', formatted)
-    print_compounds(resp.json())
+    print_compounds([resp.json()])
 
 
 @click.command()
@@ -46,9 +53,11 @@ def get_all():
 
 def print_compounds(lst):
     click.echo(
-        '| compound |          name |       formula |          inchi|        smiles | cross_links | create_date |')
+        '| compound |          name |       formula |          inchi|'
+        '        smiles | cross_links |         create_date |')
     click.echo(
-        '|----------+---------------+---------------+---------------+---------------+-------------+-------------|')
+        '|----------+---------------+---------------+---------------+'
+        '---------------+-------------+---------------------|')
     format_str = \
         '| {compound:>8} | {name:>13} | {formula:>13} | {inchi:>13} |' \
         ' {smiles:>13} | {cross_links_count:>11} | {date_created:>11} |'
@@ -60,7 +69,7 @@ def print_compounds(lst):
             inchi=to_str(c['inchi']),
             smiles=to_str(c['smiles']),
             cross_links_count=to_str(c['cross_links_count'], 11),
-            date_created=to_str(c['date_created'], 11),
+            date_created=to_str(c['date_created'], 19),
         ))
 
 
