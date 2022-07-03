@@ -21,9 +21,11 @@ services:
     container_name: pyforge.api
     command: python manage.py run -h 0.0.0.0
     volumes:
-      - ./services/web/:/usr/src/app/
+      - ./logs:/usr/src/app/logs
     ports:
       - 5000:5000
+    env_file:
+      - ./.env.dev
     depends_on:
       - postgres
     networks:

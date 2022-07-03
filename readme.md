@@ -1,4 +1,4 @@
-### Run locally
+## Run Flask locally
 
 ```shell script
 # install dependencies
@@ -9,7 +9,17 @@ docker compose up postgres
 
 # run flask locally
 dotenv -f .env.local run -- python3 ./services/web/manage.py run
+```
 
+## Run Flask in docker
+
+```shell script
+docker compose up
+```
+
+## Run CLI
+
+```shell script
 # run CLI app locally with help
 python3 services/main.py --help
 
@@ -20,5 +30,5 @@ python3 services/main.py get-all
 python3 services/main.py add-compound --compound=<COMPOUND>
 # or just 
 python3 services/main.py add-compound
-# and enter compound name in prompt
+# and enter compound ID in prompt
 ```
