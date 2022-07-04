@@ -29,9 +29,9 @@ you can retrieve compounds information from external API:
 python3 services/main.py --help
 
 # get compound information either from database or from API
-python3 services/main.py add-compound --compound=<COMPOUND>
+python3 services/main.py get_compound --compound=<COMPOUND>
 # or just 
-python3 services/main.py add-compound
+python3 services/main.py get_compound
 # and then enter compound ID in prompt
 ```
 To check cached records in db:

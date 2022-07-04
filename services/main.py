@@ -2,7 +2,6 @@ import click
 import requests
 import logging
 
-
 logging.basicConfig(filename='logs/cli.log', filemode='a', level=logging.DEBUG)
 
 
@@ -13,35 +12,27 @@ def cli():
 
 @click.command()
 @click.option('--compound', prompt='Compound')
-def add_compound(compound):
-    click.echo(f'Compound: {compound}')
-    r = requests.get(f'http://localhost:5000/compounds/{compound}')
-    c = r.json()
+def get_compound(compound):
+    click.echo(f'Request compound: {compound}')
+    resp = requests.get(f'http://localhost:5000/compounds/{compound}')
+
+    if resp.status_code == 404:
+        click.echo('Not Found')
+        return
+
+    if resp.status_code != 200:
+        logging.error(f'error: {resp}')
+        click.echo('Unexpected error')
+        return
+
+    c = resp.json()
     logging.info(f'found compound: {c}')
     if c is not None:
         print_compounds([c])
         return
-
-    from_api = requests.get(f'https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/{compound}')
-    c = from_api.json()
-    new_compound = c and c[compound] and c[compound][0]
-    logging.info(f'new compound: {new_compound}')
-    if new_compound is None:
+    else:
         click.echo('Not Found')
         return
-
-    formatted = dict(
-        compound=compound,
-        name=new_compound['name'],
-        formula=new_compound['formula'],
-        inchi=new_compound['inchi'],
-        inchi_key=new_compound['inchi_key'],
-        smiles=new_compound['smiles'],
-        cross_links_count=len(new_compound['cross_links']),
-    )
-    logging.info(f'add compound: {formatted}')
-    resp = requests.post('http://localhost:5000/compounds', formatted)
-    print_compounds([resp.json()])
 
 
 @click.command()
@@ -79,7 +70,8 @@ def to_str(val, length=13):
         return f'{s[:length - 3]}...'
     return s
 
-cli.add_command(add_compound)
+
+cli.add_command(get_compound)
 cli.add_command(get_all)
 
 if __name__ == '__main__':
