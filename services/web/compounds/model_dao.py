@@ -17,7 +17,6 @@ def _get_compound(compound: str) -> Optional[Compound]:
         return None
 
 
-
 def get_compound(compound: str) -> Optional[dict]:
     res = _get_compound(compound)
     if res is not None:
