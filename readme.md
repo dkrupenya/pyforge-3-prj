@@ -5,6 +5,10 @@ The application allows to get information about compound from external API and k
 ## Run Flask locally
 
 ```shell script
+# create and activate venv
+python3 -m venv venv
+source venv/bin/activate
+
 # install dependencies
 python3 -m pip install -r requirements.txt
 
@@ -29,13 +33,18 @@ you can retrieve compounds information from external API:
 python3 services/main.py --help
 
 # get compound information either from database or from API
-python3 services/main.py get_compound --compound=<COMPOUND>
+python3 services/main.py get_compound --compound=<COMPOUND_CODE>
 # or just 
 python3 services/main.py get_compound
-# and then enter compound ID in prompt
+# and then enter compound code in prompt
 ```
 To check cached records in db:
 ```shell script
 # print compounds in db
 python3 services/main.py get-all
+```
+
+## Run tests for CLI app
+```shell script
+pytest
 ```
